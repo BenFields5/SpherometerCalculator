@@ -21,7 +21,15 @@ public class Main {
                     (1) Load default dimensions
                     (2) Enter dimensions of new spherometer
                     Enter here:\s""");
-            int choice = scan.nextInt();
+            int choice = 0;
+            try {
+                choice = scan.nextInt();
+            } catch (Exception e) {
+                System.out.println("Invalid input, expecting an integer");
+                System.out.println(e.toString());
+            }
+
+            scan.nextLine();
 
             if (choice == 1) {
                 double indicatorPrecision = 0;
@@ -85,8 +93,8 @@ public class Main {
                 }
             }
 
-            System.out.print("Run it again? (y/n): ");
-            String runAgain = scan.next();
+            System.out.print("Run it again? (y/n):\s");
+            String runAgain = scan.nextLine();
 
             if (runAgain.equals("n")) {
                 stop = true;
