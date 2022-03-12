@@ -6,30 +6,41 @@ public class Main {
     public static void main(String[] args) {
         Scanner scan = new Scanner(System.in);
 
+        int i = 1;
         boolean stop = false;
         while (!stop) {
+
+            if (i == 1) {
+                System.out.print("""
+                        -------------------------------------------------------------
+                        Info:
+                        -All measurements should be entered in inches.
+                        -"side AB total length" is the length between the two
+                        ball feet, including their width.
+                        -ROC means "radius of curvature"
+                        -FL means "focal length" 
+                        """);
+            } else {
+                System.out.println("\n-------------------------------------------------------------");
+            }
             System.out.print("""
-                    -------------------------------------------------------------
-                    Info:
-                    -All measurements should be entered in inches.
-                    -"side AB total length" is the length between the two
-                    ball feet, including their width.
-                    -ROC means "radius of curvature"
-                    -FL means "focal length"
-                    
-                    Choose an option:
+                    \nChoose an option:
                     (1) Load default dimensions
                     (2) Enter dimensions of new spherometer
                     Enter here:\s""");
+
             int choice = 0;
             try {
                 choice = scan.nextInt();
+                if (choice == 1 || choice == 2){ // Handles the possibility that an exception is not thrown, but the integer entered is not an acceptable one
+                    ;
+                } else {
+                    System.out.println("Invalid input, expecting 1 or 2");
+                }
             } catch (Exception e) {
                 System.out.println("Invalid input, expecting an integer");
-                System.out.println(e.toString());
             }
-
-            scan.nextLine();
+            scan.nextLine(); // Consumes the ">Enter" from when the user enters their input
 
             if (choice == 1) {
                 double indicatorPrecision = 0;
@@ -37,9 +48,17 @@ public class Main {
                 double sideBCTotalLength = 0;
                 double sideCATotalLength = 0;
                 double ballDiameter = 0;
+                double measuredValue = 0;
 
-                System.out.print("Enter the measured value: ");
-                double measuredValue = scan.nextDouble();
+                try {
+                    System.out.print("Enter the measured value: ");
+                    measuredValue = scan.nextDouble();
+
+                    scan.nextLine(); // Consumes the ">Enter" from when the user enters their input
+
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
 
                 try {
                     BufferedReader br = new BufferedReader(
@@ -69,13 +88,14 @@ public class Main {
                 double sideCATotalLength = scan.nextDouble();
                 System.out.print("Enter the diameter of the ball feet: ");
                 double ballDiameter = scan.nextDouble();
+                System.out.print("Would you like to set these dimensions as default? (y/n): ");
+                String setDefault = scan.next();
                 System.out.print("\nEnter the measured value: ");
                 double measuredValue = scan.nextDouble();
 
                 printEtc(indicatorPrecision, sideABTotalLength, sideBCTotalLength, sideCATotalLength, ballDiameter, measuredValue);
 
-                System.out.print("\nWould you like to set these dimensions as default? (y/n): ");
-                String setDefault = scan.next();
+                scan.nextLine(); // Consumes the ">Enter" from when the user enters their input
 
                 if (Objects.equals(setDefault, "y")) {
                     try {
@@ -93,12 +113,14 @@ public class Main {
                 }
             }
 
-            System.out.print("Run it again? (y/n):\s");
+            System.out.print("Run it again? (y/n): ");
             String runAgain = scan.nextLine();
 
             if (runAgain.equals("n")) {
                 stop = true;
             }
+
+            i += 1;
         }
     }
 
@@ -106,8 +128,7 @@ public class Main {
         int sigFigs = calculateSigFigs(indicatorPrecision);
         double numROC = roundToSigFigs(calculateROC(sideABTotalLength,sideBCTotalLength,sideCATotalLength, measuredValue, ballDiameter),sigFigs);
 
-        System.out.println( "The ROC is: " + numROC +
-                "\nThe FL is: " + numROC/2);
+        System.out.println( "The ROC is: " + numROC + "\nThe FL is: " + numROC/2);
     }
 
     public static double calculateROC(double sideABTotalLength, double sideBCTotalLength, double sideCATotalLength, double measuredValue, double ballDiameter){
